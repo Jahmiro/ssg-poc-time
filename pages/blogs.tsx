@@ -3,8 +3,6 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
-
 type Blog = {
   id: number;
   title: string;
@@ -16,6 +14,7 @@ type BlogResponse = {
 };
 
 const BlogsPage = () => {
+  const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
   const [blogs, setBlogs] = useState<Blog[]>([]);
 
   useEffect(() => {
