@@ -95,6 +95,6 @@ const BlogDetail: React.FC<Props> = ({ blog, error }) => {
       </div>
     </div>
   );
-};
+}; 
 
 export default BlogDetail;
