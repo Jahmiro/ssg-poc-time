@@ -7,7 +7,7 @@ type Props = {
 
 export const getStaticProps: GetStaticProps<Props> = async () => {
   try {
-    const res = await fetch("http://127.0.0.1:5000/current-time");
+    const res = await fetch("https://cryptic-bastion-20850-17d5b5f8ec19.herokuapp.com/current-time");
     if (!res.ok) {
       throw new Error("Failed to fetch current time");
     }
