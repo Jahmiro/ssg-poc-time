@@ -1,13 +1,72 @@
-import { GetStaticProps } from "next";
 import { useEffect, useState } from "react";
+import Link from "next/link";
 
 type Props = {
+  initialCurrentTime: string;
+};
+
+const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+
+const Page: React.FC<Props> = ({ initialCurrentTime }) => {
+  const [currentTime, setCurrentTime] = useState<string>(initialCurrentTime);
+
+  useEffect(() => {
+    const fetchCurrentTime = async () => {
+      try {
+        const res = await fetch(`${BASE_URL}/current-time`);
+        if (!res.ok) {
+          throw new Error("Failed to fetch current time");
+        }
+        const data = await res.json();
+        setCurrentTime(data.time); // Set the current time from the API
+      } catch (error) {
+        console.error("Error fetching current time:", error);
+        // If there's an error fetching the time, keep the last known time
+      }
+    };
+
+    const interval = setInterval(fetchCurrentTime, 5000); // Refresh time every 5 seconds
+
+    return () => clearInterval(interval); // Clean up interval on component unmount
+  }, []);
+
+  return (
+    <div>
+      <nav className="flex justify-between items-center bg-gray-200 text-tertiary-700 p-4">
+        <div className="flex space-x-4 ml-auto mr-[20px]">
+          <Link href="/">Home</Link>
+          <Link href="/blogs">Blogs</Link>
+        </div>
+      </nav>
+      <div className="flex items-center justify-center my-12">
+        <TimeCard currentTime={currentTime} />
+      </div>
+    </div>
+  );
+};
+
+type TimeCardProps = {
   currentTime: string;
 };
 
-export const getStaticProps: GetStaticProps<Props> = async () => {
+const TimeCard: React.FC<TimeCardProps> = ({ currentTime }) => {
+  return (
+    <div className="bg-neutral-125 rounded-lg shadow-md p-[100px] flex flex-col items-center justify-center text-center">
+      <h1 className="text-3xl font-bold mb-4 text-tertiary-700">
+        Huidige Tijd
+      </h1>
+      <div className="text-xl text-tertiary-700">
+        {currentTime || "Laatst bekende tijd wordt geladen..."}
+      </div>
+    </div>
+  );
+};
+
+export const getStaticProps = async () => {
   try {
-    const res = await fetch("https://cryptic-bastion-20850-17d5b5f8ec19.herokuapp.com/current-time");
+    const res = await fetch(
+      "https://cryptic-bastion-20850-17d5b5f8ec19.herokuapp.com/current-time"
+    );
     if (!res.ok) {
       throw new Error("Failed to fetch current time");
     }
@@ -16,32 +75,19 @@ export const getStaticProps: GetStaticProps<Props> = async () => {
 
     return {
       props: {
-        currentTime,
+        initialCurrentTime: currentTime || "", // Pass initial current time as prop
       },
-      revalidate: 5,
+      revalidate: 5, // Revalidate every 5 seconds (for ISR)
     };
   } catch (error) {
     console.error("Error fetching current time:", error);
     return {
       props: {
-        currentTime: "",
+        initialCurrentTime: "", // Show empty string if error (fallback)
       },
-      revalidate: 5, 
+      revalidate: 5, // Retry every 5 seconds on error (for ISR)
     };
   }
-};
-
-const Page: React.FC<Props> = ({ currentTime }) => {
-  return (
-    <div className="flex flex-col items-center justify-center my-[40px]">
-      <h1 className="text-tertiary-800 text-[28px] w-full text-center font-bold mb-[20px]">
-        Huidige Tijd
-      </h1>
-      <div className="text-tertiary-800 text-[24px] mb-4">
-        {currentTime || "Laatst bekende tijd wordt geladen..."}
-      </div>
-    </div>
-  );
 };
 
 export default Page;
