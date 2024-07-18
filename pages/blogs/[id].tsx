@@ -13,11 +13,9 @@ type Props = {
   error: string | null;
 };
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
-
 export const getStaticPaths: GetStaticPaths = async () => {
   try {
-    const res = await fetch(`${BASE_URL}/blog-posts`);
+    const res = await fetch(`blog-posts`);
     if (!res.ok) {
       throw new Error("Failed to fetch blog posts");
     }
@@ -37,7 +35,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 export const getStaticProps: GetStaticProps<Props> = async (context) => {
   const { id } = context.params!;
   try {
-    const res = await fetch(`${BASE_URL}/blog-posts/${id}`);
+    const res = await fetch(`blog-posts/${id}`);
     if (!res.ok) {
       throw new Error(`Failed to fetch blog with id ${id}: ${res.statusText}`);
     }

@@ -11,15 +11,13 @@ type BlogResponse = {
   blog_posts: Blog[];
 };
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
-
 const BlogsPage = () => {
   const [blogs, setBlogs] = useState<Blog[]>([]);
 
   useEffect(() => {
     const fetchBlogs = async () => {
       try {
-        const res = await fetch(`${BASE_URL}/blog-posts`);
+        const res = await fetch(`https://cryptic-bastion-20850-17d5b5f8ec19.herokuapp.com/blog-posts`);
         if (!res.ok) {
           throw new Error("Failed to fetch blogs");
         }
