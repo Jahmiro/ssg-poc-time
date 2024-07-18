@@ -46,7 +46,6 @@ export const getStaticProps: GetStaticProps<Props> = async (context) => {
         blog,
         error: null,
       },
-      revalidate: 30, // Revalidate every 30 seconds to keep data fresh
     };
   } catch (error) {
     console.error(`Error fetching blog with id ${id}:`, error);
@@ -55,7 +54,6 @@ export const getStaticProps: GetStaticProps<Props> = async (context) => {
         blog: null,
         error: `Failed to fetch blog with id ${id}`,
       },
-      revalidate: 30, // Revalidate every 30 seconds even on error
     };
   }
 };

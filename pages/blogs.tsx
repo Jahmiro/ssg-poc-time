@@ -1,6 +1,6 @@
 // pages/blogs.tsx
 
-import { useEffect, useState } from "react";
+import { GetStaticProps } from "next";
 import Link from "next/link";
 
 type Blog = {
@@ -9,29 +9,13 @@ type Blog = {
   content: string;
 };
 
+type Props = {
+  blogs: Blog[];
+};
+
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
-const BlogsPage = () => {
-  const [blogs, setBlogs] = useState<Blog[]>([]);
-
-  useEffect(() => {
-    const fetchBlogs = async () => {
-      try {
-        const res = await fetch(`https://cryptic-bastion-20850-17d5b5f8ec19.herokuapp.com/blog-posts`);
-        if (!res.ok) {
-          throw new Error("Failed to fetch blogs");
-        }
-        const data = await res.json();
-        setBlogs(data.blog_posts); // Set the blogs from the API
-      } catch (error) {
-        console.error("Error fetching blogs:", error);
-        setBlogs([]); // Set blogs to an empty array on error
-      }
-    };
-
-    fetchBlogs(); // Fetch blogs when component mounts
-  }, []);
-
+const BlogsPage = ({ blogs }: Props) => {
   return (
     <div>
       <nav className="flex justify-between items-center bg-purple-600 text-white p-4">
@@ -53,6 +37,32 @@ const BlogsPage = () => {
       </div>
     </div>
   );
+};
+
+export const getStaticProps: GetStaticProps<Props> = async () => {
+  try {
+    const res = await fetch(
+      `https://cryptic-bastion-20850-17d5b5f8ec19.herokuapp.com/blog-posts`
+    );
+    if (!res.ok) {
+      throw new Error("Failed to fetch blog posts");
+    }
+    const data = await res.json();
+    const blogs: Blog[] = data.blog_posts;
+
+    return {
+      props: {
+        blogs,
+      },
+    };
+  } catch (error) {
+    console.error("Error fetching blogs:", error);
+    return {
+      props: {
+        blogs: [],
+      },
+    };
+  }
 };
 
 export default BlogsPage;
