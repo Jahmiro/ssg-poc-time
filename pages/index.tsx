@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import Link from "next/link";
+import Navigation from "@/components/navigation";
 
 type Props = {
   initialCurrentTime: string;
@@ -32,12 +32,7 @@ const Page: React.FC<Props> = ({ initialCurrentTime }) => {
 
   return (
     <div>
-      <nav className="flex justify-between items-center bg-gray-200 text-tertiary-700 p-4">
-        <div className="flex space-x-4 ml-auto mr-[20px]">
-          <Link href="/">Home</Link>
-          <Link href="/blogs">Blogs</Link>
-        </div>
-      </nav>
+      <Navigation />
       <div className="flex items-center justify-center my-12">
         <TimeCard currentTime={currentTime} />
       </div>
@@ -51,10 +46,8 @@ type TimeCardProps = {
 
 const TimeCard: React.FC<TimeCardProps> = ({ currentTime }) => {
   return (
-    <div className="bg-neutral-125 rounded-lg shadow-md p-[100px] flex flex-col items-center justify-center text-center">
-      <h1 className="text-3xl font-bold mb-4 text-tertiary-700">
-        Huidige Tijd
-      </h1>
+    <div className="bg-neutral-125 rounded-lg shadow-md p-8 flex flex-col items-center justify-center text-center">
+      <h1 className="text-3xl font-bold mb-4 text-tertiary-700">Huidige Tijd</h1>
       <div className="text-xl text-tertiary-700">
         {currentTime || "Laatst bekende tijd wordt geladen..."}
       </div>

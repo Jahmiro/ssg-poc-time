@@ -1,3 +1,6 @@
+// pages/blogs/[id].tsx
+
+import Navigation from "@/components/navigation";
 import { GetStaticProps, GetStaticPaths } from "next";
 import { useRouter } from "next/router";
 import React from "react";
@@ -15,7 +18,9 @@ type Props = {
 
 export const getStaticPaths: GetStaticPaths = async () => {
   try {
-    const res = await fetch(`https://cryptic-bastion-20850-17d5b5f8ec19.herokuapp.com/blog-posts`);
+    const res = await fetch(
+      `https://cryptic-bastion-20850-17d5b5f8ec19.herokuapp.com/blog-posts`
+    );
     if (!res.ok) {
       throw new Error("Failed to fetch blog posts");
     }
@@ -35,7 +40,9 @@ export const getStaticPaths: GetStaticPaths = async () => {
 export const getStaticProps: GetStaticProps<Props> = async (context) => {
   const { id } = context.params!;
   try {
-    const res = await fetch(`https://cryptic-bastion-20850-17d5b5f8ec19.herokuapp.com/blog-posts/${id}`);
+    const res = await fetch(
+      `https://cryptic-bastion-20850-17d5b5f8ec19.herokuapp.com/blog-posts/${id}`
+    );
     if (!res.ok) {
       throw new Error(`Failed to fetch blog with id ${id}: ${res.statusText}`);
     }
@@ -78,23 +85,32 @@ const BlogDetail: React.FC<Props> = ({ blog, error }) => {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4">
-      <div className="bg-white border border-neutral-400 rounded-lg shadow-lg pt-6 max-w-md w-full">
-        <h1 className="text-tertiary-800 text-2xl font-bold mb-4 text-center">
-          {blog.title}
-        </h1>
-        <p className="text-tertiary-700 text-lg px-4 pb-4">{blog.content}</p>
+    <>
+      <Navigation />
+      <div className="bg-white py-24 sm:py-32">
+        <div className="mx-auto max-w-7xl px-6 lg:px-8">
+          <div className="mx-auto max-w-2xl lg:mx-0">
+            <button
+              onClick={() => router.back()}
+              className="text-secondary-500 py-2 rounded-lg mb-[10px] hover:bg-blue-700 hover:text-secondary-600"
+            >
+              Terug naar blogs
+            </button>
+            <h2 className="text-3xl font-bold tracking-tight text-tertiary-800 sm:text-4xl">
+              {blog.title}
+            </h2>
+          </div>
+          <div className="mt-10">
+            <div className="max-w-2xl">
+              <p className="text-tertiary-800 text-lg leading-8">
+                {blog.content}
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
-      <div className="flex justify-center mt-4">
-        <button
-          onClick={() => router.back()}
-          className="text-secondary-500 px-4 py-2 rounded-lg hover:bg-blue-700 hover:text-secondary-600"
-        >
-          Terug naar homepagina
-        </button>
-      </div>
-    </div>
+    </>
   );
-}; 
+};
 
 export default BlogDetail;
