@@ -52,14 +52,17 @@ const BlogsPage = () => {
       <div className="container mx-auto px-4 py-8">
         <h1 className="text-3xl font-bold mb-4">Blogs</h1>
         <ul>
-          {blogs.map((blog) => (
-            <li key={blog.id} className="text-lg mb-2">
-              <Link href={`/blogs/${blog.id}`}>
-                {blog.title}
-              </Link>
-            </li>
-          ))}
-          {blogs.length === 0 && <li>No blogs found.</li>}
+          {blogs.length > 0 ? (
+            blogs.map((blog) => (
+              <li key={blog.id} className="text-lg mb-2">
+                <Link href={`/blogs/${blog.id}`}>
+                  {blog.title}
+                </Link>
+              </li>
+            ))
+          ) : (
+            <li>No blogs found.</li>
+          )}
         </ul>
       </div>
     </div>
