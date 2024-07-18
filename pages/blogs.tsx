@@ -1,3 +1,5 @@
+// pages/blogs.tsx
+
 import { useEffect, useState } from "react";
 import Link from "next/link";
 
@@ -7,9 +9,7 @@ type Blog = {
   content: string;
 };
 
-type BlogResponse = {
-  blog_posts: Blog[];
-};
+const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 const BlogsPage = () => {
   const [blogs, setBlogs] = useState<Blog[]>([]);
@@ -21,10 +21,11 @@ const BlogsPage = () => {
         if (!res.ok) {
           throw new Error("Failed to fetch blogs");
         }
-        const data: BlogResponse = await res.json();
+        const data = await res.json();
         setBlogs(data.blog_posts); // Set the blogs from the API
       } catch (error) {
         console.error("Error fetching blogs:", error);
+        setBlogs([]); // Set blogs to an empty array on error
       }
     };
 
