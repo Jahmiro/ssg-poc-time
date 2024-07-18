@@ -13,8 +13,6 @@ type Props = {
   error: string | null;
 };
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
-
 export const getStaticPaths: GetStaticPaths = async () => {
   try {
     const res = await fetch(`https://cryptic-bastion-20850-17d5b5f8ec19.herokuapp.com/blog-posts`);

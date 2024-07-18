@@ -1,5 +1,3 @@
-// pages/blogs.tsx
-
 import { useEffect, useState } from "react";
 import Link from "next/link";
 
@@ -14,13 +12,14 @@ type BlogResponse = {
 };
 
 const BlogsPage = () => {
-  const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
   const [blogs, setBlogs] = useState<Blog[]>([]);
 
   useEffect(() => {
     const fetchBlogs = async () => {
       try {
-        const res = await fetch(`https://cryptic-bastion-20850-17d5b5f8ec19.herokuapp.com/blog-posts`);
+        const res = await fetch(
+          `https://cryptic-bastion-20850-17d5b5f8ec19.herokuapp.com/blog-posts`
+        );
         if (!res.ok) {
           throw new Error("Failed to fetch blogs");
         }
@@ -51,17 +50,12 @@ const BlogsPage = () => {
       <div className="container mx-auto px-4 py-8">
         <h1 className="text-3xl font-bold mb-4">Blogs</h1>
         <ul>
-          {blogs.length > 0 ? (
-            blogs.map((blog) => (
-              <li key={blog.id} className="text-lg mb-2">
-                <Link href={`/blogs/${blog.id}`}>
-                  {blog.title}
-                </Link>
-              </li>
-            ))
-          ) : (
-            <li>No blogs found.</li>
-          )}
+          {blogs.map((blog) => (
+            <li key={blog.id} className="text-lg mb-2">
+              <Link href={`/blogs/${blog.id}`}>{blog.title}</Link>
+            </li>
+          ))}
+          {blogs.length === 0 && <li>No blogs found.</li>}
         </ul>
       </div>
     </div>
