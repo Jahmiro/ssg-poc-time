@@ -13,9 +13,11 @@ type Props = {
   error: string | null;
 };
 
+const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+
 export const getStaticPaths: GetStaticPaths = async () => {
   try {
-    const res = await fetch(`https://cryptic-bastion-20850-17d5b5f8ec19.herokuapp.com/blog-posts`);
+    const res = await fetch(`${BASE_URL}/blog-posts`);
     if (!res.ok) {
       throw new Error("Failed to fetch blog posts");
     }
@@ -35,7 +37,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 export const getStaticProps: GetStaticProps<Props> = async (context) => {
   const { id } = context.params!;
   try {
-    const res = await fetch(`https://cryptic-bastion-20850-17d5b5f8ec19.herokuapp.com/blog-posts/${id}`);
+    const res = await fetch(`${BASE_URL}/blog-posts/${id}`);
     if (!res.ok) {
       throw new Error(`Failed to fetch blog with id ${id}: ${res.statusText}`);
     }
@@ -46,7 +48,7 @@ export const getStaticProps: GetStaticProps<Props> = async (context) => {
         blog,
         error: null,
       },
-      revalidate: 30,
+      revalidate: 30, // Revalidate every 30 seconds to keep data fresh
     };
   } catch (error) {
     console.error(`Error fetching blog with id ${id}:`, error);
@@ -55,7 +57,7 @@ export const getStaticProps: GetStaticProps<Props> = async (context) => {
         blog: null,
         error: `Failed to fetch blog with id ${id}`,
       },
-      revalidate: 30,
+      revalidate: 30, // Revalidate every 30 seconds even on error
     };
   }
 };
