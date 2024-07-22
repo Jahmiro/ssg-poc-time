@@ -5,29 +5,25 @@ type Props = {
   initialCurrentTime: string;
 };
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
-
 const Page: React.FC<Props> = ({ initialCurrentTime }) => {
-  const [currentTime, setCurrentTime] = useState<string>(initialCurrentTime);
+  const [currentTime, setCurrentTime] = useState(initialCurrentTime);
 
   useEffect(() => {
-    const fetchCurrentTime = async () => {
+    const interval = setInterval(async () => {
       try {
-        const res = await fetch(`${BASE_URL}/current-time`);
-        if (!res.ok) {
-          throw new Error("Failed to fetch current time");
+        const res = await fetch(
+          "https://cryptic-bastion-20850-17d5b5f8ec19.herokuapp.com/current-time"
+        );
+        if (res.ok) {
+          const data = await res.json();
+          setCurrentTime(data.time);
         }
-        const data = await res.json();
-        setCurrentTime(data.time); // Set the current time from the API
       } catch (error) {
         console.error("Error fetching current time:", error);
-        // If there's an error fetching the time, keep the last known time
       }
-    };
+    }, 6000);
 
-    const interval = setInterval(fetchCurrentTime, 5000); // Refresh time every 5 seconds
-
-    return () => clearInterval(interval); // Clean up interval on component unmount
+    return () => clearInterval(interval);
   }, []);
 
   return (
@@ -68,17 +64,15 @@ export const getStaticProps = async () => {
 
     return {
       props: {
-        initialCurrentTime: currentTime || "", // Pass initial current time as prop
+        initialCurrentTime: currentTime || "",
       },
-      revalidate: 5, // Revalidate every 5 seconds (for ISR)
     };
   } catch (error) {
     console.error("Error fetching current time:", error);
     return {
       props: {
-        initialCurrentTime: "", // Show empty string if error (fallback)
+        initialCurrentTime: "", 
       },
-      revalidate: 5, // Retry every 5 seconds on error (for ISR)
     };
   }
 };
